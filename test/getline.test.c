@@ -10,7 +10,6 @@
 #include "../fd.h"
 #include "../getline.h"
 
-#include "../../debug/debug.h"
 #include "../../log/log.h"
 
 int main()
