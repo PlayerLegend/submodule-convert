@@ -1,6 +1,4 @@
 vgcore.*
 *.o
-test/
-bin/
 core
 Makefile.bak
