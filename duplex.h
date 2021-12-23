@@ -16,4 +16,5 @@ struct convert_duplex {
     convert_sink sink;
     convert_duplex_clear_callback clear;
 };
-    
+
+bool convert_join (convert_sink * sink, convert_source * source);
