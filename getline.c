@@ -21,10 +21,12 @@ bool convert_getline (bool * error, range_const_char * line, convert_source * so
 
     while (!(region_size = range_count(source->contents->region)) || region_size == (end_point = range_strstr (&source->contents->signed_cast.region.const_cast, end_sequence)))
     {
+	//log_debug ("No newline in region " RANGE_FORMSPEC, RANGE_FORMSPEC_ARG(source->contents->region));
 	if (!convert_grow (error, source, 20))
 	{
 	    return false;
 	}
+	//log_debug ("Done reading more");
 	
 	/*window_alloc (*source->contents, range_count(source->contents->region) + 20);
 	if (!convert_read (error, source))

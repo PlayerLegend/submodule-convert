@@ -27,7 +27,7 @@ inline static void convert_source_clear (convert_source * source)
 }
 
 void convert_source_free(convert_source * source);
-bool convert_fill (bool * error, convert_source * source);
+bool convert_fill_alloc (bool * error, convert_source * source);
 bool convert_fill_minimum (bool * error, convert_source * source, size_t limit);
 bool convert_load_all (bool * error, convert_source * source);
 bool convert_pull_max (bool * error, range_const_unsigned_char * result, convert_source * source, size_t limit);

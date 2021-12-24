@@ -16,7 +16,7 @@ convert_source * convert_source_new (size_t arg_size)
     return calloc (1, sizeof(convert_source));
 }
 
-bool convert_fill (bool * error, convert_source * source)
+bool convert_fill_alloc (bool * error, convert_source * source)
 {
     assert (source->contents);
     
@@ -71,7 +71,7 @@ bool convert_load_all (bool * error, convert_source * source)
 {
     size_t new_size;
     
-    while (convert_fill (error, source))
+    while (convert_fill_alloc (error, source))
     {
 	new_size = 2 * range_count (source->contents->region) + 1024;
 	window_alloc (*source->contents, new_size);
@@ -99,7 +99,7 @@ bool convert_skip_bytes(bool * error, convert_source * source, size_t count)
 
 	if (!have_bytes)
 	{
-	    if (!convert_fill (error, source))
+	    if (!convert_fill_alloc (error, source))
 	    {
 		log_debug ("failed to fill");
 		return false;
@@ -144,7 +144,7 @@ bool convert_pull_max (bool * error, range_const_unsigned_char * result, convert
 
     window_alloc (*source->contents, 1024);
 
-    convert_fill (error, source);
+    convert_fill_alloc (error, source);
 
     if (*error)
     {
@@ -175,5 +175,5 @@ bool convert_grow (bool * error, convert_source * source, size_t count)
 {
     size_t new_size = range_count (source->contents->region) + count;
     window_alloc (*source->contents, new_size);
-    return convert_fill (error, source);
+    return convert_read (error, source);
 }

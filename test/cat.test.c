@@ -25,7 +25,7 @@ int main()
 
     bool error = false;
     
-    while (convert_fill (&error, &fd_read.source) && convert_drain (&error, &fd_write.sink))
+    while (convert_fill_alloc (&error, &fd_read.source) && convert_drain (&error, &fd_write.sink))
     {
 	assert (!error);
     }

@@ -19,7 +19,7 @@ bool convert_join (convert_sink * sink, convert_source * source)
 
     bool error = false;
 
-    while (convert_fill (&error, source))
+    while (convert_fill_alloc (&error, source))
     {
 	if (!convert_drain (&error, sink))
 	{
