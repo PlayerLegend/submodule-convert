@@ -1,6 +1,7 @@
 #ifndef FLAT_INCLUDES
 #include <stddef.h>
 #include <stdbool.h>
+#include <assert.h>
 #define FLAT_INCLUDES
 #include "../range/def.h"
 #include "../window/def.h"

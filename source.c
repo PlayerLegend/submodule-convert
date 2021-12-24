@@ -25,6 +25,11 @@ bool convert_fill (bool * error, convert_source * source)
 	window_rewrite (*source->contents);
     }
 
+    if (!window_remaining(*source->contents))
+    {
+	return true;
+    }
+
     size_t start_size = range_count (source->contents->region);
     
     while ( source->contents->region.end < source->contents->alloc.end && convert_read(error, source) )
