@@ -7,7 +7,6 @@
 #include "../../range/def.h"
 #include "../../window/def.h"
 #include "../../window/alloc.h"
-#include "../../keyargs/keyargs.h"
 #include "../source.h"
 #include "../fd/source.h"
 #include "../sink.h"
@@ -19,8 +18,8 @@ int main()
 {
     window_unsigned_char buffer = {0};
     
-    fd_source fd_read = fd_source_init(.fd = STDIN_FILENO, .contents = &buffer);
-    fd_sink fd_write = fd_sink_init(.fd = STDOUT_FILENO, .contents = &buffer.region.const_cast);
+    fd_source fd_read = fd_source_init(STDIN_FILENO, &buffer);
+    fd_sink fd_write = fd_sink_init(STDOUT_FILENO, &buffer.region.const_cast);
 
     bool error = false;
 

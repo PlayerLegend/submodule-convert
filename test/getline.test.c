@@ -6,7 +6,6 @@
 #include "../../range/def.h"
 #include "../../window/def.h"
 #include "../../window/alloc.h"
-#include "../../keyargs/keyargs.h"
 #include "../source.h"
 #include "../fd/source.h"
 #include "../sink.h"
@@ -19,7 +18,7 @@ int main()
 {
     window_unsigned_char window = {0};
     
-    fd_source read = fd_source_init(.fd = STDIN_FILENO, .contents = &window);
+    fd_source read = fd_source_init(STDIN_FILENO, &window);
 
     window_alloc (window, 1e6);
 

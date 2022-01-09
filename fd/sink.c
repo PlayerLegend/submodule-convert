@@ -7,7 +7,6 @@
 #include "../../range/def.h"
 #include "../../window/def.h"
 #include "../../window/alloc.h"
-#include "../../keyargs/keyargs.h"
 #include "../source.h"
 #include "../sink.h"
 #include "sink.h"
@@ -47,13 +46,13 @@ static void convert_clear_fd_sink (convert_sink * sink)
     close (io->fd);
 }
 
-keyargs_define(fd_sink_init)
+fd_sink fd_sink_init(int fd, range_const_unsigned_char * contents)
 {
     return (fd_sink)
 	{
 	    .sink.update = convert_write_fd,
 	    .sink.clear = convert_clear_fd_sink,
-	    .fd = args.fd,
-	    .sink.contents = args.contents,
+	    .fd = fd,
+	    .sink.contents = contents,
 	};
 }

@@ -27,3 +27,9 @@ bool convert_drain (bool * error, convert_sink * sink)
 //    return !*error && (end_size != start_size || range_is_empty (*sink->contents));
     return !*error && range_is_empty (*sink->contents);
 }
+
+void convert_sink_free(convert_sink * sink)
+{
+    sink->clear(sink);
+    free (sink);
+}

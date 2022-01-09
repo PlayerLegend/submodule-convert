@@ -7,7 +7,6 @@
 #include "../../range/def.h"
 #include "../../window/def.h"
 #include "../../window/alloc.h"
-#include "../../keyargs/keyargs.h"
 #include "../source.h"
 #include "../sink.h"
 #include "source.h"
@@ -56,14 +55,14 @@ static void convert_clear_fd_source (convert_source * source)
     close (io->fd);
 }
 
-keyargs_define(fd_source_init)
+fd_source fd_source_init (int fd, window_unsigned_char * contents)
 {
     return (fd_source)
 	{
 	    .source.update = convert_read_fd,
 	    .source.clear = convert_clear_fd_source,
-	    .fd = args.fd,
-	    .source.contents = args.contents,
+	    .fd = fd,
+	    .source.contents = contents,
 	};
 }
 

@@ -37,7 +37,7 @@ bool convert_fill_alloc (bool * error, convert_source * source)
 
     size_t end_size = range_count (source->contents->region);
     
-    assert (!*error);
+    //assert (!*error);
     assert (start_size <= end_size);
     
     return !*error && end_size != start_size;
@@ -46,7 +46,7 @@ bool convert_fill_alloc (bool * error, convert_source * source)
 bool convert_fill_minimum (bool * error, convert_source * source, size_t limit)
 {
     window_alloc (*source->contents, limit);
-    
+
     while ( (size_t)range_count (source->contents->region) < limit && convert_read(error, source) )
     {}
 
@@ -58,7 +58,7 @@ bool convert_fill_minimum (bool * error, convert_source * source, size_t limit)
     if ((size_t)range_count (source->contents->region) < limit)
     {
 	*error = true;
-	log_debug ("Failed to fill minimum");
+	log_debug ("Failed to fill minimum %zu / %zu", range_count(source->contents->region), limit);
 	return false;
     }
 
@@ -83,7 +83,7 @@ bool convert_load_all (bool * error, convert_source * source)
     return !*error;
 }
 
-void convert_free(convert_source * source)
+void convert_source_free(convert_source * source)
 {
     source->clear(source);
     free (source);

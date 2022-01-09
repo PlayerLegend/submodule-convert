@@ -7,7 +7,6 @@
 #include "../../window/def.h"
 #include "../source.h"
 #include "../sink.h"
-#include "../../keyargs/keyargs.h"
 #endif
 
 typedef struct {
@@ -16,8 +15,4 @@ typedef struct {
 }
     fd_sink;
 
-#define fd_sink_init(...) keyargs_call(fd_sink_init, __VA_ARGS__)
-keyargs_declare(fd_sink,
-		fd_sink_init,
-		range_const_unsigned_char * contents;
-		int fd;);
+fd_sink fd_sink_init(int fd, range_const_unsigned_char * contents);

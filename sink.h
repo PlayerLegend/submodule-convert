@@ -21,9 +21,13 @@ inline static bool convert_write (bool * error, convert_sink * sink)
     return sink->update(error, sink);
 }
 
+bool convert_drain (bool * error, convert_sink * sink);
+
 inline static void convert_sink_clear (convert_sink * sink)
 {
+    bool error = false;
+    convert_drain(&error, sink);
     sink->clear(sink);
 }
 
-bool convert_drain (bool * error, convert_sink * sink);
+void convert_sink_free(convert_sink * sink);
