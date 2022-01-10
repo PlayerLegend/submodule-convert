@@ -8,7 +8,7 @@
 #include "../window/alloc.h"
 #include "sink.h"
 #include "source.h"
-#include "duplex.h"
+#include "join.h"
 #endif
 
 bool convert_join (convert_sink * sink, convert_source * source)

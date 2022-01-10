@@ -38,7 +38,7 @@ bool convert_getline (bool * error, range_const_char * line, convert_source * so
 
     line->begin = source->contents->signed_cast.region.const_cast.begin;
     line->end = line->begin + end_point;
-    window_release (*source->contents, range_count(*line) + range_count (*end_sequence));
+    source->contents->region.begin += range_count(*line) + range_count (*end_sequence);
     
     return !*error;
 }

@@ -23,7 +23,7 @@ int main()
 
     bool error = false;
 
-    assert (convert_load_all (&error, &fd_read.source));
+    assert (convert_load_all (&fd_read.source));
     assert (!error);
 
     while (convert_drain (&error, &fd_write.sink))

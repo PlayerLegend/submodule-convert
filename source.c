@@ -67,11 +67,13 @@ bool convert_fill_minimum (bool * error, convert_source * source, size_t limit)
     return !*error && (size_t)range_count (source->contents->region) >= limit;
 }
 
-bool convert_load_all (bool * error, convert_source * source)
+bool convert_load_all (convert_source * source)
 {
+    bool error = false;
+    
     size_t new_size;
     
-    while (convert_fill_alloc (error, source))
+    while (convert_fill_alloc (&error, source))
     {
 	new_size = 2 * range_count (source->contents->region) + 1024;
 	window_alloc (*source->contents, new_size);
@@ -80,7 +82,7 @@ bool convert_load_all (bool * error, convert_source * source)
     *window_push (*source->contents) = '\0';
     source->contents->region.end--;
 
-    return !*error;
+    return !error;
 }
 
 void convert_source_free(convert_source * source)
