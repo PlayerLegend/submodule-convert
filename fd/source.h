@@ -22,3 +22,4 @@ typedef struct fd_source /// A structure used for reading from a file descriptor
     fd_source;
 
 fd_source fd_source_init (int fd, window_unsigned_char * contents); ///< Initializes an fd_source
+convert_source * fd_source_new (int fd); ///< Allocates and initializes an fd_source

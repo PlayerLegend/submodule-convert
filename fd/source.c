@@ -66,3 +66,23 @@ fd_source fd_source_init (int fd, window_unsigned_char * contents)
 	};
 }
 
+static void convert_clear_fd_source_and_free_buffer (convert_source * source)
+{
+    convert_clear_fd_source (source);
+
+    window_clear (*source->contents);
+    free (source->contents);
+}
+
+convert_source * fd_source_new (int fd)
+{
+    fd_source * retval = calloc(1, sizeof(*retval));
+
+    retval->source.update = convert_read_fd;
+    retval->source.clear = convert_clear_fd_source_and_free_buffer;
+
+    retval->fd = fd;
+    retval->source.contents = calloc (1, sizeof(*retval->source.contents));
+
+    return &retval->source;
+}
