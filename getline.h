@@ -1,18 +1,14 @@
 #ifndef FLAT_INCLUDES
-#include <stddef.h>
-#include <stdbool.h>
-#define FLAT_INCLUDES
-#include "../range/def.h"
-#include "../window/def.h"
 #include "source.h"
 #endif
 
 /**
    @file convert/getline.h
    Provides the convert_getline function
+   @todo update documentation
 */
 
-bool convert_getline (bool * error, range_const_char * line, convert_source * source, const range_const_char * end_sequence);
+status convert_getline (range_const_char * line, convert_source * source, const range_const_char * end_sequence);
 /**<
    @brief Reads a line from 'source' and places its contents in 'line', consuming the line's bytes from source's contents. Resulting lines will not contain their line end sequences.
    @param error Will be set to true if an error occurs

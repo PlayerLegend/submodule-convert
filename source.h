@@ -4,15 +4,17 @@
 #define FLAT_INCLUDES
 #include "../range/def.h"
 #include "../window/def.h"
+#include "status.h"
 #endif
 
 /**
    @file convert/source.h
    Provides an interface for reading bytes from an abstracted stream into a window.
+   @todo update documentation
 */
 
 typedef struct convert_source convert_source;
-typedef bool (*convert_source_update_callback)(bool * error, convert_source * target);
+typedef status (*convert_source_update_callback)(convert_source * target);
 /**<
    @brief This callback is called when more bytes should be read into the given source. 
    @param error Should be set to true if an error occurs
@@ -32,9 +34,9 @@ struct convert_source /// A generic source type
     window_unsigned_char * contents; ///< The contents into which the update callback will write bytes
 };
 
-inline static bool convert_read (bool * error, convert_source * interface)
+inline static status convert_read (convert_source * interface)
 {
-    return interface->update(error, interface);
+    return interface->update(interface);
 }
 /**<
    @brief Reads once from the given interface
@@ -55,32 +57,32 @@ void convert_source_free(convert_source * source);
    @brief Clears and then frees the given source
  */
 
-bool convert_fill_alloc (bool * error, convert_source * source);
+status convert_fill_alloc (convert_source * source);
 /**<
    @brief Reads into the remaining unused bytes of the given source's contents
  */
 
-bool convert_fill_minimum (bool * error, convert_source * source, size_t limit);
+//status convert_fill_minimum (convert_source * source, size_t limit);
 /**<
    @brief Reads at least 'limit' number of bytes into the given source's contents. If 0 bytes are read, then false is returned and error is not set. If a nonzero number of bytes are read, but this number is still less than limit, then error is set to true and false is returned. Otherwise, this function returns true.
  */
 
-bool convert_load_all (convert_source * source);
+status convert_load_all (convert_source * source);
 /**<
    @brief Loads bytes into the source's contents until the source is exhausted. Returns true if no error occured, and false otherwise.
 */
 
-bool convert_pull_max (bool * error, range_const_unsigned_char * result, convert_source * source, size_t limit);
+//status convert_pull_max (range_const_unsigned_char * result, convert_source * source, size_t limit);
 /**<
    @brief Attempts to read 'limit' bytes from the source, and then assigns result to point to at most 'limit' bytes at the beginning of the source. The bytes returned in 'result' will be consumed from the source's contents.
  */
 
-bool convert_grow (bool * error, convert_source * source, size_t count);
+status convert_grow (convert_source * source, size_t count);
 /**<
    @brief Attempts to read 'count' more bytes onto the end of the given source's contents.
 */
 
-bool convert_skip_bytes(bool * error, convert_source * source, size_t count);
+status convert_skip_bytes(convert_source * source, size_t count);
 /**<
    @brief Skips ahead in the source stream by 'count' bytes, discarding the skipped bytes.
 */

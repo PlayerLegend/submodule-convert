@@ -1,3 +1,12 @@
+#include "source.h"
+
+#include <assert.h>
+#include <stdlib.h>
+
+#include "../window/alloc.h"
+#include "../log/log.h"
+
+/*
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -10,13 +19,14 @@
 #include "source.h"
 
 #include "../log/log.h"
+*/
 
 convert_source * convert_source_new (size_t arg_size)
 {
     return calloc (1, sizeof(convert_source));
 }
 
-bool convert_fill_alloc (bool * error, convert_source * source)
+status convert_fill_alloc (convert_source * source)
 {
     assert (source->contents);
     
@@ -25,55 +35,46 @@ bool convert_fill_alloc (bool * error, convert_source * source)
 	window_rewrite (*source->contents);
     }
 
-    if (!window_remaining(*source->contents))
-    {
-	return true;
-    }
+    status status = STATUS_UPDATE;
 
-    size_t start_size = range_count (source->contents->region);
-    
-    while ( source->contents->region.end < source->contents->alloc.end && convert_read(error, source) )
+    while ( source->contents->region.end < source->contents->alloc.end && (status = convert_read(source)) == STATUS_UPDATE )
     {}
 
-    size_t end_size = range_count (source->contents->region);
-    
-    //assert (!*error);
-    assert (start_size <= end_size);
-    
-    return !*error && end_size != start_size;
+    return status;
 }
 
-bool convert_fill_minimum (bool * error, convert_source * source, size_t limit)
+/*status convert_fill_minimum (convert_source * source, size_t limit)
 {
     window_alloc (*source->contents, limit);
 
-    while ( (size_t)range_count (source->contents->region) < limit && convert_read(error, source) )
+    status status = STATUS_INCOMPLETE;
+
+    while ( (size_t)range_count (source->contents->region) < limit && (status = convert_read(source)) == STATUS_INCOMPLETE )
     {}
 
     if (range_is_empty (source->contents->region))
     {
-	return false;
+	return STATUS_ERROR;
     }
 
     if ((size_t)range_count (source->contents->region) < limit)
     {
-	*error = true;
 	log_debug ("Failed to fill minimum %zu / %zu", range_count(source->contents->region), limit);
-	return false;
+	return STATUS_ERROR;
     }
 
     assert ((size_t)range_count (source->contents->region) >= limit);
     
-    return !*error && (size_t)range_count (source->contents->region) >= limit;
-}
+    return (size_t)range_count (source->contents->region) >= limit;
+    }*/
 
-bool convert_load_all (convert_source * source)
+status convert_load_all (convert_source * source)
 {
-    bool error = false;
-    
     size_t new_size;
-    
-    while (convert_fill_alloc (&error, source))
+
+    status status = STATUS_UPDATE;
+
+    while ( (status = convert_fill_alloc (source)) != STATUS_END )
     {
 	new_size = 2 * range_count (source->contents->region) + 1024;
 	window_alloc (*source->contents, new_size);
@@ -82,7 +83,7 @@ bool convert_load_all (convert_source * source)
     *window_push (*source->contents) = '\0';
     source->contents->region.end--;
 
-    return !error;
+    return status;
 }
 
 void convert_source_free(convert_source * source)
@@ -91,37 +92,30 @@ void convert_source_free(convert_source * source)
     free (source);
 }
 
-bool convert_skip_bytes(bool * error, convert_source * source, size_t count)
+status convert_skip_bytes(convert_source * source, size_t count)
 {
     size_t have_bytes;
+
+    status status = STATUS_UPDATE;
     
-    while (count > 0)
+    while (count > 0 && status == STATUS_UPDATE)
     {
-	have_bytes = range_count(source->contents->region);
-
-	if (!have_bytes)
+	if ( (have_bytes = range_count(source->contents->region)) )
 	{
-	    if (!convert_fill_alloc (error, source))
-	    {
-		log_debug ("failed to fill");
-		return false;
-	    }
+	    source->contents->region.begin += have_bytes;
+	    count -= have_bytes;
 	}
-
-	if (have_bytes > count)
+	else if ((status = convert_fill_alloc (source)) == STATUS_ERROR)
 	{
-	    have_bytes = count;
+	    log_debug ("Failed to fill");
+	    break;
 	}
-
-	source->contents->region.begin += have_bytes;
-
-	count -= have_bytes;
     }
 
-    return true;
+    return count == 0 ? status : STATUS_ERROR;
 }
 
-bool convert_pull_max (bool * error, range_const_unsigned_char * result, convert_source * source, size_t limit)
+/*status convert_pull_max (range_const_unsigned_char * result, convert_source * source, size_t limit)
 {
     if (!limit)
     {
@@ -171,11 +165,11 @@ bool convert_pull_max (bool * error, range_const_unsigned_char * result, convert
 finish:
     source->contents->region.begin = (unsigned char*) result->end;
     return true;
-}
+    }*/
 
-bool convert_grow (bool * error, convert_source * source, size_t count)
+status convert_grow (convert_source * source, size_t count)
 {
     size_t new_size = range_count (source->contents->region) + count;
     window_alloc (*source->contents, new_size);
-    return convert_read (error, source);
+    return convert_read (source);
 }

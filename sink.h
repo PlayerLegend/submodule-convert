@@ -4,15 +4,17 @@
 #define FLAT_INCLUDES
 #include "../range/def.h"
 #include "../window/def.h"
+#include "status.h"
 #endif
 
 /**
    @file convert/sink.h
    Provides an interface for writing bytes from a range into an abstracted stream.
+   @todo update documentation
 */
 
 typedef struct convert_sink convert_sink;
-typedef bool (*convert_sink_update_callback)(bool * error, convert_sink * target);
+typedef status (*convert_sink_update_callback)(convert_sink * target);
 /**<
    This callback is called when bytes should be drained from the target's contents.
    @param error Should be set to true if an error occurs
@@ -32,9 +34,9 @@ struct convert_sink /// A generic sink structure
     range_const_unsigned_char * contents; ///< The contents range to drain
 };
 
-inline static bool convert_write (bool * error, convert_sink * sink)
+inline static status convert_write (convert_sink * sink)
 {
-    return sink->update(error, sink);
+    return sink->update(sink);
 }
 /**<
    @brief Writes bytes from the sink's contents once
@@ -42,7 +44,7 @@ inline static bool convert_write (bool * error, convert_sink * sink)
    @param interface The sink to write from
 */
 
-bool convert_drain (bool * error, convert_sink * sink);
+status convert_drain (convert_sink * sink);
 /**<
    @brief Writes all of the contents of the given sink
    @param error Will be set to true if an error occurs
@@ -51,8 +53,7 @@ bool convert_drain (bool * error, convert_sink * sink);
 
 inline static void convert_sink_clear (convert_sink * sink)
 {
-    bool error = false;
-    convert_drain(&error, sink);
+    convert_drain(sink);
     sink->clear(sink);
 }
 /**<

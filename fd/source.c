@@ -1,20 +1,11 @@
-#include <stdlib.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <assert.h>
-#define FLAT_INCLUDES
-#include "../../range/def.h"
-#include "../../window/def.h"
-#include "../../window/alloc.h"
-#include "../source.h"
-#include "../sink.h"
 #include "source.h"
-#include "sink.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <assert.h>
+#include <stdlib.h>
+#include "../../window/alloc.h"
 
-#include "../../log/log.h"
-
-static bool convert_read_fd (bool * error, convert_source * source)
+static status convert_read_fd (convert_source * source)
 {
     fd_source * io = (fd_source*) source;
 
@@ -37,15 +28,17 @@ static bool convert_read_fd (bool * error, convert_source * source)
 	if (got < 0)
 	{
 	    perror ("read");
-	    *error = true;
+	    return STATUS_ERROR;
 	}
-
-	return false;
+	else
+	{
+	    return STATUS_END;
+	}
     }
 
     source->contents->region.end += got;
 
-    return true;
+    return STATUS_UPDATE;
 }
 
 
