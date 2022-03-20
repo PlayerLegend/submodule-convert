@@ -1,25 +1,14 @@
-#include <stddef.h>
-#include <stdbool.h>
-#include <assert.h>
-#include <unistd.h>
-#define FLAT_INCLUDES
-#include "../../range/def.h"
-#include "../../window/def.h"
-#include "../../window/alloc.h"
-#include "../../keyargs/keyargs.h"
-#include "../source.h"
-#include "../fd/source.h"
-#include "../sink.h"
-#include "../fd/sink.h"
 #include "../getline.h"
-
-#include "../../log/log.h"
+#include "../fd/source.h"
+#include <unistd.h>
+#include <assert.h>
+#include "../../window/alloc.h"
 
 int main()
 {
     window_unsigned_char window = {0};
     
-    fd_source read = fd_source_init(.fd = STDIN_FILENO, .contents = &window);
+    fd_source read = fd_source_init(STDIN_FILENO, &window);
 
     window_alloc (window, 1e6);
 
@@ -29,14 +18,14 @@ int main()
 
     assert (end.end == end.begin + 1);
 
-    bool error = false;
+    status status;
 
-    while (convert_getline (&error, &line, &read.source, &end))
+    while ( (status = convert_getline (&line, &read.source, &end)) == STATUS_UPDATE )
     {
 	log_normal ("line: %.*s", range_count(line), line.begin);
     }
-
-    assert (!error);
+    
+    assert (status == STATUS_END);
 
     window_clear (window);
 

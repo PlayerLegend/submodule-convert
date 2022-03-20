@@ -1,21 +1,11 @@
-#include <stdlib.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <assert.h>
-#define FLAT_INCLUDES
-#include "../../range/def.h"
-#include "../../window/def.h"
-#include "../../window/alloc.h"
-#include "../../keyargs/keyargs.h"
-#include "../source.h"
-#include "../sink.h"
 #include "source.h"
-#include "sink.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <assert.h>
+#include <stdlib.h>
+#include "../../window/alloc.h"
 
-#include "../../log/log.h"
-
-static bool convert_read_fd (bool * error, convert_source * source)
+static status convert_read_fd (convert_source * source)
 {
     fd_source * io = (fd_source*) source;
 
@@ -38,15 +28,17 @@ static bool convert_read_fd (bool * error, convert_source * source)
 	if (got < 0)
 	{
 	    perror ("read");
-	    *error = true;
+	    return STATUS_ERROR;
 	}
-
-	return false;
+	else
+	{
+	    return STATUS_END;
+	}
     }
 
     source->contents->region.end += got;
 
-    return true;
+    return STATUS_UPDATE;
 }
 
 
@@ -56,14 +48,34 @@ static void convert_clear_fd_source (convert_source * source)
     close (io->fd);
 }
 
-keyargs_define(fd_source_init)
+fd_source fd_source_init (int fd, window_unsigned_char * contents)
 {
     return (fd_source)
 	{
 	    .source.update = convert_read_fd,
 	    .source.clear = convert_clear_fd_source,
-	    .fd = args.fd,
-	    .source.contents = args.contents,
+	    .fd = fd,
+	    .source.contents = contents,
 	};
 }
 
+static void convert_clear_fd_source_and_free_buffer (convert_source * source)
+{
+    convert_clear_fd_source (source);
+
+    window_clear (*source->contents);
+    free (source->contents);
+}
+
+convert_source * fd_source_new (int fd)
+{
+    fd_source * retval = calloc(1, sizeof(*retval));
+
+    retval->source.update = convert_read_fd;
+    retval->source.clear = convert_clear_fd_source_and_free_buffer;
+
+    retval->fd = fd;
+    retval->source.contents = calloc (1, sizeof(*retval->source.contents));
+
+    return &retval->source;
+}

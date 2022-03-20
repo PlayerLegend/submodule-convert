@@ -38,6 +38,7 @@ SH_PROGRAMS += test/run-convert-cat-load-all
 
 RUN_TESTS += test/run-convert-cat
 RUN_TESTS += test/run-convert-cat-load-all
+RUN_TESTS += test/run-convert-getline
 
 convert-tests: test/convert-cat
 convert-tests: test/convert-cat-load-all

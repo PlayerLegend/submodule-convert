@@ -1,23 +1,17 @@
 #ifndef FLAT_INCLUDES
-#include <stddef.h>
-#include <stdbool.h>
-#include <unistd.h>
-#define FLAT_INCLUDES
-#include "../../range/def.h"
-#include "../../window/def.h"
-#include "../source.h"
 #include "../sink.h"
-#include "../../keyargs/keyargs.h"
 #endif
 
-typedef struct {
-    convert_sink sink;
-    int fd;
+/**
+   @file convert/fd/sink.h
+   Provides a sink for writing to file descriptors
+*/
+
+typedef struct fd_sink /// A structure used for writing to a file descriptor using the interface described in convert/sink.h
+{
+    convert_sink sink; ///< The sink to write to
+    int fd; ///< The file descriptor to use when writing
 }
     fd_sink;
 
-#define fd_sink_init(...) keyargs_call(fd_sink_init, __VA_ARGS__)
-keyargs_declare(fd_sink,
-		fd_sink_init,
-		range_const_unsigned_char * contents;
-		int fd;);
+fd_sink fd_sink_init(int fd, range_const_unsigned_char * contents); ///< Initializes an fd_sink

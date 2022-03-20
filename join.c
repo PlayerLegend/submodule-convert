@@ -8,14 +8,14 @@
 #include "../window/alloc.h"
 #include "sink.h"
 #include "source.h"
-#include "duplex.h"
+#include "join.h"
 #endif
 
 bool convert_join (convert_sink * sink, convert_source * source)
 {
     sink->contents = &source->contents->region.const_cast;
 
-    window_alloc (*source->contents, 1024);
+    window_alloc (*source->contents, 65535);
 
     bool error = false;
 
@@ -25,7 +25,11 @@ bool convert_join (convert_sink * sink, convert_source * source)
 	{
 	    return false;
 	}
+
+	assert (range_is_empty (*sink->contents));
     }
+
+    assert (range_is_empty (*sink->contents) || error);
 
     return !error;
 }

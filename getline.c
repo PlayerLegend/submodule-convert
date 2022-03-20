@@ -1,45 +1,31 @@
-#include <stddef.h>
-#include <stdbool.h>
-#include <assert.h>
-#include <string.h>
-#define FLAT_INCLUDES
-#include "../range/def.h"
-#include "../range/string.h"
-#include "../window/def.h"
-#include "../window/alloc.h"
-#include "../keyargs/keyargs.h"
-#include "source.h"
 #include "getline.h"
+#include "../range/string.h"
+#include <assert.h>
 
-#include "../log/log.h"
-
-bool convert_getline (bool * error, range_const_char * line, convert_source * source, const range_const_char * end_sequence)
+status convert_getline (range_const_char * line, convert_source * source, const range_const_char * end_sequence)
 {
     size_t region_size;
 
     size_t end_point;
 
+    status status;
+
     while (!(region_size = range_count(source->contents->region)) || region_size == (end_point = range_strstr (&source->contents->signed_cast.region.const_cast, end_sequence)))
     {
 	//log_debug ("No newline in region " RANGE_FORMSPEC, RANGE_FORMSPEC_ARG(source->contents->region));
-	if (!convert_grow (error, source, 20))
+	status = convert_grow (source, 20);
+
+	if (status != STATUS_UPDATE)
 	{
-	    return false;
+	    return region_size == 0 ? STATUS_END : STATUS_ERROR;
 	}
-	//log_debug ("Done reading more");
-	
-	/*window_alloc (*source->contents, range_count(source->contents->region) + 20);
-	if (!convert_read (error, source))
-	{
-	    return false;
-	    }*/
     }
 
     assert (region_size > end_point);
 
     line->begin = source->contents->signed_cast.region.const_cast.begin;
     line->end = line->begin + end_point;
-    window_release (*source->contents, range_count(*line) + range_count (*end_sequence));
+    source->contents->region.begin += range_count(*line) + range_count (*end_sequence);
     
-    return !*error;
+    return STATUS_UPDATE;
 }

@@ -1,20 +1,9 @@
-#include <stdlib.h>
-#include <stdbool.h>
+#include "sink.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <assert.h>
-#define FLAT_INCLUDES
-#include "../../range/def.h"
-#include "../../window/def.h"
-#include "../../window/alloc.h"
-#include "../../keyargs/keyargs.h"
-#include "../source.h"
-#include "../sink.h"
-#include "sink.h"
 
-#include "../../log/log.h"
-
-static bool convert_write_fd (bool * error, convert_sink * sink)
+static status convert_write_fd (convert_sink * sink)
 {
     fd_sink * io = (fd_sink*) sink;
 
@@ -30,15 +19,19 @@ static bool convert_write_fd (bool * error, convert_sink * sink)
     if (wrote < 0)
     {
 	perror ("write");
-	*error = true;
-	return false;
+	return STATUS_ERROR;
+    }
+
+    if (wrote == 0)
+    {
+	return STATUS_END;
     }
 
     assert ((size_t) wrote <= remaining);
 
     sink->contents->begin += wrote;
 
-    return true;
+    return STATUS_UPDATE;
 }
 
 static void convert_clear_fd_sink (convert_sink * sink)
@@ -47,13 +40,13 @@ static void convert_clear_fd_sink (convert_sink * sink)
     close (io->fd);
 }
 
-keyargs_define(fd_sink_init)
+fd_sink fd_sink_init(int fd, range_const_unsigned_char * contents)
 {
     return (fd_sink)
 	{
 	    .sink.update = convert_write_fd,
 	    .sink.clear = convert_clear_fd_sink,
-	    .fd = args.fd,
-	    .sink.contents = args.contents,
+	    .fd = fd,
+	    .sink.contents = contents,
 	};
 }
