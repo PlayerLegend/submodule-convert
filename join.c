@@ -1,15 +1,6 @@
-#ifndef FLAT_INCLUDES
-#include <stddef.h>
-#include <stdbool.h>
-#include <assert.h>
-#define FLAT_INCLUDES
-#include "../range/def.h"
-#include "../window/def.h"
-#include "../window/alloc.h"
-#include "sink.h"
-#include "source.h"
 #include "join.h"
-#endif
+#include <assert.h>
+#include "../window/alloc.h"
 
 bool convert_join (convert_sink * sink, convert_source * source)
 {
@@ -17,11 +8,11 @@ bool convert_join (convert_sink * sink, convert_source * source)
 
     window_alloc (*source->contents, 65535);
 
-    bool error = false;
+    status status = STATUS_UPDATE;
 
-    while (convert_fill_alloc (&error, source))
+    while ((status = convert_fill_alloc (source)) != STATUS_ERROR && !range_is_empty(source->contents->region))
     {
-	if (!convert_drain (&error, sink))
+	if (STATUS_UPDATE != convert_drain (sink))
 	{
 	    return false;
 	}
@@ -29,7 +20,7 @@ bool convert_join (convert_sink * sink, convert_source * source)
 	assert (range_is_empty (*sink->contents));
     }
 
-    assert (range_is_empty (*sink->contents) || error);
+    assert (range_is_empty (*sink->contents));
 
-    return !error;
+    return status != STATUS_ERROR;
 }

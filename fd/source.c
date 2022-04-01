@@ -45,7 +45,10 @@ static status convert_read_fd (convert_source * source)
 static void convert_clear_fd_source (convert_source * source)
 {
     fd_source * io = (fd_source*) source;
-    close (io->fd);
+    if (io->fd >= 0)
+    {
+	close (io->fd);
+    }
 }
 
 fd_source fd_source_init (int fd, window_unsigned_char * contents)

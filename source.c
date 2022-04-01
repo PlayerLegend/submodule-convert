@@ -43,30 +43,29 @@ status convert_fill_alloc (convert_source * source)
     return status;
 }
 
-/*status convert_fill_minimum (convert_source * source, size_t limit)
+status convert_fill_minimum (convert_source * source, size_t limit)
 {
     window_alloc (*source->contents, limit);
 
-    status status = STATUS_INCOMPLETE;
+    status status = STATUS_UPDATE;
 
-    while ( (size_t)range_count (source->contents->region) < limit && (status = convert_read(source)) == STATUS_INCOMPLETE )
+    while ( (size_t)range_count (source->contents->region) < limit && (status = convert_read(source)) == STATUS_UPDATE )
     {}
 
     if (range_is_empty (source->contents->region))
     {
-	return STATUS_ERROR;
+	return status;
     }
 
     if ((size_t)range_count (source->contents->region) < limit)
     {
-	log_debug ("Failed to fill minimum %zu / %zu", range_count(source->contents->region), limit);
 	return STATUS_ERROR;
     }
 
     assert ((size_t)range_count (source->contents->region) >= limit);
-    
-    return (size_t)range_count (source->contents->region) >= limit;
-    }*/
+
+    return status;
+}
 
 status convert_load_all (convert_source * source)
 {

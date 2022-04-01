@@ -62,7 +62,7 @@ status convert_fill_alloc (convert_source * source);
    @brief Reads into the remaining unused bytes of the given source's contents
  */
 
-//status convert_fill_minimum (convert_source * source, size_t limit);
+status convert_fill_minimum (convert_source * source, size_t limit);
 /**<
    @brief Reads at least 'limit' number of bytes into the given source's contents. If 0 bytes are read, then false is returned and error is not set. If a nonzero number of bytes are read, but this number is still less than limit, then error is set to true and false is returned. Otherwise, this function returns true.
  */

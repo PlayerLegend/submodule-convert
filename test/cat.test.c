@@ -6,7 +6,7 @@
 #include "../../window/alloc.h"
 #include "../sink.h"
 #include "../fd/sink.h"
-
+#include "../../log/log.h"
 
 int main()
 {
@@ -22,6 +22,7 @@ int main()
     while ( (status = convert_fill_alloc (&fd_read.source)) != STATUS_ERROR && !range_is_empty (read_buffer.region) )
     {
 	assert (convert_drain (&fd_write.sink) == STATUS_UPDATE);
+	assert (range_is_empty (read_buffer.region));
     }
 
     assert (status != STATUS_ERROR);
