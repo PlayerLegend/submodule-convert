@@ -42,7 +42,7 @@ run-convert-tests:
 
 depend: convert-depend
 convert-depend:
-	sh makedepend.sh src/convert/convert.makefile
+	cdeps src/convert > src/convert/depends.makefile
 
 convert-tests: test/convert-cat
 convert-tests: test/convert-cat-load-all
@@ -52,33 +52,3 @@ convert-tests: test/convert-getline
 convert-tests: test/run-convert-getline
 
 tests: convert-tests
-# DO NOT DELETE
-
-src/convert/join.o: src/convert/join.h src/convert/sink.h src/range/def.h
-src/convert/join.o: src/window/def.h src/convert/status.h
-src/convert/join.o: src/convert/source.h src/window/alloc.h
-src/convert/source.o: src/convert/source.h src/window/alloc.h src/log/log.h
-src/convert/fd/sink.o: src/convert/sink.h src/range/def.h src/window/def.h
-src/convert/fd/sink.o: src/convert/status.h
-src/convert/fd/source.o: src/convert/source.h src/window/alloc.h
-src/convert/fd/source.o: src/range/def.h src/window/def.h
-src/convert/sink.o: src/convert/sink.h src/range/def.h src/window/def.h
-src/convert/sink.o: src/convert/status.h
-src/convert/getline.o: src/convert/getline.h src/convert/source.h
-src/convert/getline.o: src/range/string.h src/range/def.h
-src/convert/test/getline.test.o: src/convert/getline.h src/convert/source.h
-src/convert/test/getline.test.o: src/convert/fd/source.h src/convert/source.h
-src/convert/test/getline.test.o: src/range/def.h src/window/def.h
-src/convert/test/getline.test.o: src/convert/status.h src/window/alloc.h
-src/convert/test/getline.test.o: src/log/log.h
-src/convert/test/cat-load-all.test.o: src/convert/fd/source.h
-src/convert/test/cat-load-all.test.o: src/convert/source.h src/range/def.h
-src/convert/test/cat-load-all.test.o: src/window/def.h src/convert/status.h
-src/convert/test/cat-load-all.test.o: src/convert/sink.h
-src/convert/test/cat-load-all.test.o: src/convert/fd/sink.h
-src/convert/test/cat-load-all.test.o: src/window/alloc.h
-src/convert/test/cat.test.o: src/convert/fd/source.h src/convert/source.h
-src/convert/test/cat.test.o: src/range/def.h src/window/def.h
-src/convert/test/cat.test.o: src/convert/status.h src/window/alloc.h
-src/convert/test/cat.test.o: src/convert/sink.h src/convert/fd/sink.h
-src/convert/test/cat.test.o: src/log/log.h
