@@ -15,7 +15,7 @@ int main()
     window_alloc (read_buffer, 1e6);
 
     fd_source fd_read = fd_source_init(STDIN_FILENO, &read_buffer);
-    fd_sink fd_write = fd_sink_init(STDOUT_FILENO, &read_buffer.region.const_cast);
+    fd_sink fd_write = fd_sink_init(STDOUT_FILENO, &read_buffer.region.alias_const);
 
     status status = STATUS_UPDATE;
 

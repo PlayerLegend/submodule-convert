@@ -4,7 +4,7 @@
 
 bool convert_join (convert_sink * sink, convert_source * source)
 {
-    sink->contents = &source->contents->region.const_cast;
+    sink->contents = &source->contents->region.alias_const;
 
     window_alloc (*source->contents, 65535);
 
