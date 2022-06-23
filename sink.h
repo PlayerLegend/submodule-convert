@@ -1,10 +1,5 @@
 #ifndef FLAT_INCLUDES
-#include <stddef.h>
-#include <stdbool.h>
-#define FLAT_INCLUDES
-#include "../range/def.h"
-#include "../window/def.h"
-#include "status.h"
+#include "type.h"
 #endif
 
 /**
@@ -12,27 +7,6 @@
    Provides an interface for writing bytes from a range into an abstracted stream.
    @todo update documentation
 */
-
-typedef struct convert_sink convert_sink;
-typedef status (*convert_sink_update_callback)(convert_sink * target);
-/**<
-   This callback is called when bytes should be drained from the target's contents.
-   @param error Should be set to true if an error occurs
-   @param target The target sink
-   @return Returns true if more bytes may be written after this call. Returns false if an error occured or the output stream closed.
-*/
-
-typedef void (*convert_sink_clear_callback)(convert_sink * target);
-/**<
-   @brief This callback is run in order to free any allocations to the given sink before it is freed
-*/
-
-struct convert_sink /// A generic sink structure
-{
-    convert_sink_update_callback update; ///< The update callback
-    convert_sink_clear_callback clear; ///< The clear callback
-    range_const_unsigned_char * contents; ///< The contents range to drain
-};
 
 inline static status convert_write (convert_sink * sink)
 {

@@ -1,10 +1,5 @@
 #ifndef FLAT_INCLUDES
-#include <stddef.h>
-#include <stdbool.h>
-#define FLAT_INCLUDES
-#include "../range/def.h"
-#include "../window/def.h"
-#include "status.h"
+#include "type.h"
 #endif
 
 /**
@@ -12,27 +7,6 @@
    Provides an interface for reading bytes from an abstracted stream into a window.
    @todo update documentation
 */
-
-typedef struct convert_source convert_source;
-typedef status (*convert_source_update_callback)(convert_source * target);
-/**<
-   @brief This callback is called when more bytes should be read into the given source. 
-   @param error Should be set to true if an error occurs
-   @param target The target source
-   @return True if further bytes may be read, false if the stream ended with this call or an error occurred.
-*/
-
-typedef void (*convert_source_clear_callback)(convert_source * target);
-/**<
-   @brief This callback is run in order to free any allocations to the given source before it is freed
-*/
-
-struct convert_source /// A generic source type
-{
-    convert_source_update_callback update; ///< The update callback
-    convert_source_clear_callback clear; ///< The clear callback
-    window_unsigned_char * contents; ///< The contents into which the update callback will write bytes
-};
 
 inline static status convert_read (convert_source * interface)
 {

@@ -1,4 +1,5 @@
 #ifndef FLAT_INCLUDES
+#include <stdbool.h>
 #include "sink.h"
 #include "source.h"
 #endif

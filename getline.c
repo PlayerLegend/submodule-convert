@@ -1,4 +1,5 @@
 #include "getline.h"
+#include <stdbool.h>
 #include "../range/string.h"
 #include <assert.h>
 

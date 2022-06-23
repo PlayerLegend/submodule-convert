@@ -11,7 +11,7 @@ static status convert_write_fd (convert_sink * sink)
 
     if (!remaining)
     {
-	return true;
+	return STATUS_UPDATE;
     }
 
     ssize_t wrote = write (io->fd, sink->contents->begin, remaining);

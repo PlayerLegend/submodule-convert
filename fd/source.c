@@ -18,7 +18,7 @@ static status convert_read_fd (convert_source * source)
     
     if (!remaining)
     {
-	return true;
+	return STATUS_UPDATE;
     }
 
     ssize_t got = read (io->fd, source->contents->region.end, remaining);

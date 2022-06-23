@@ -6,21 +6,6 @@
 #include "../window/alloc.h"
 #include "../log/log.h"
 
-/*
-#include <stdlib.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <assert.h>
-#define FLAT_INCLUDES
-#include "../range/def.h"
-#include "../window/def.h"
-#include "../window/alloc.h"
-#include "source.h"
-
-#include "../log/log.h"
-*/
-
 convert_source * convert_source_new (size_t arg_size)
 {
     return calloc (1, sizeof(convert_source));
